@@ -1,4 +1,4 @@
-é# Main inspiration for the graph: https://r-graph-gallery.com/web-stacked-area-chart-inline-labels.html
+# Main inspiration for the graph: https://r-graph-gallery.com/web-stacked-area-chart-inline-labels.html
 
 library(tidyverse)
 library(janitor)
