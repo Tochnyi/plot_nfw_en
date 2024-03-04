@@ -44,7 +44,7 @@ pal=c("darkgrey", "gold",
 order <- c("rub","gold","cny","eur","jpy", "gbp", "usd"  )
 
 
-currencies_ru = c("доллары США","евро", "фунты стерлингов", "японские иены","китайские юани", "золото в обезличенной форме", "рубли") 
+currencies_ru = c("??????? ?ША","????", "????? ??????????", "???????? ????","????????? ????", "?????? ? ???????????? ?????", "?????") 
 
 nwf_url = "https://minfin.gov.ru/ru/document?id_4=93488-dannye_o_dvizhenii_sredstv_i_rezultatakh_upravleniya_sredstvami_fonda_natsionalnogo_blagosostoyaniya"
 nwf_html = read_html(nwf_url)
@@ -53,10 +53,10 @@ nwf_tbl = nwf_html  %>% html_elements("table") %>%   html_table() %>% .[[1]]
 Sys.setlocale(,"ru_RU")
 
 nwf_df = nwf_tbl %>% 
-  filter( str_detect( `№\r\n\t\t\tп/п`, '4\\.[0-9]\\.' )   ) %>% 
-  filter(  str_detect( Показатель, currencies_ru %>% glue::glue_collapse("|")) ) %>% 
+  filter( str_detect( `?\r\n\t\t\t?/?`, '4\\.[0-9]\\.' )   ) %>% 
+  filter(  str_detect( ??????????, currencies_ru %>% glue::glue_collapse("|")) ) %>% 
   select(-1) %>% 
-  pivot_longer( !Показатель, names_to = "date") %>% 
+  pivot_longer( !??????????, names_to = "date") %>% 
   mutate( 
     date = date %>% 
       str_extract_all("([:alnum:]|[:blank:]){1,}") %>% 
@@ -65,7 +65,7 @@ nwf_df = nwf_tbl %>%
       paste('1' , .) %>% 
       lubridate::dmy(locale = "ru_RU")  %>% 
       lubridate::ceiling_date(unit = "month") ,
-    asset = Показатель %>% 
+    asset = ?????????? %>% 
           str_replace_all(currencies_ru[1] , "usd") %>% 
           str_replace_all(currencies_ru[2] , "eur") %>% 
           str_replace_all(currencies_ru[3] , "gbp") %>% 
