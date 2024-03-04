@@ -22,8 +22,6 @@ sysfonts::font_add(family = "Font Awesome 6 Brands",
                    regular = "Font Awesome 6 Brands-Regular-400.otf")
 showtext::showtext_auto()
 
-git config --global --edit
-  
 theme_set(theme_minimal(base_family = font2, base_size = 3))
 
 bg <- "white"

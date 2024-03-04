@@ -1,5 +1,3 @@
-#Written by @UlysseColonna
-
 # Main inspiration for the graph: https://r-graph-gallery.com/web-stacked-area-chart-inline-labels.html
 
 library(tidyverse)
@@ -44,8 +42,6 @@ pal=c("darkgrey", "gold",
 order <- c("rub","gold","cny","eur","jpy", "gbp", "usd"  )
 
 
-currencies_ru = c("??????? ?Ȱ","????", "????? ??????????", "???????? ????","????????? ????", "?????? ? ???????????? ?????", "?????") 
-
 nwf_url = "https://minfin.gov.ru/ru/document?id_4=93488-dannye_o_dvizhenii_sredstv_i_rezultatakh_upravleniya_sredstvami_fonda_natsionalnogo_blagosostoyaniya"
 nwf_html = read_html(nwf_url)
 nwf_tbl = nwf_html  %>% html_elements("table") %>%   html_table() %>% .[[1]]
@@ -53,10 +49,10 @@ nwf_tbl = nwf_html  %>% html_elements("table") %>%   html_table() %>% .[[1]]
 Sys.setlocale(,"ru_RU")
 
 nwf_df = nwf_tbl %>% 
-  filter( str_detect( `?\r\n\t\t\t?/?`, '4\\.[0-9]\\.' )   ) %>% 
-  filter(  str_detect( ??????????, currencies_ru %>% glue::glue_collapse("|")) ) %>% 
-  select(-1) %>% 
-  pivot_longer( !??????????, names_to = "date") %>% 
+  rename(line_ = c(1)) %>% 
+  rename(asset = c(2)) %>% 
+  filter(str_detect(line_,  '4\\.[0-9]\\.')) %>% 
+  pivot_longer( !c(asset, line_), names_to = "date") %>% 
   mutate( 
     date = date %>% 
       str_extract_all("([:alnum:]|[:blank:]){1,}") %>% 
@@ -65,15 +61,14 @@ nwf_df = nwf_tbl %>%
       paste('1' , .) %>% 
       lubridate::dmy(locale = "ru_RU")  %>% 
       lubridate::ceiling_date(unit = "month") ,
-    asset = ?????????? %>% 
-          str_replace_all(currencies_ru[1] , "usd") %>% 
-          str_replace_all(currencies_ru[2] , "eur") %>% 
-          str_replace_all(currencies_ru[3] , "gbp") %>% 
-          str_replace_all(currencies_ru[4] , "jpy") %>% 
-          str_replace_all(currencies_ru[5] , "cny") %>% 
-          str_replace_all(currencies_ru[6] , "gold") %>% 
-          str_replace_all(currencies_ru[7] , "rub") %>% 
-          str_extract("[:alpha:]{1,}") ) %>% 
+    asset = line_ %>% 
+          str_replace_all( "4.1.", "usd") %>% 
+          str_replace_all( "4.2." , "eur") %>% 
+          str_replace_all( "4.3." , "gbp") %>% 
+          str_replace_all( "4.4." , "jpy") %>% 
+          str_replace_all( "4.5." , "cny") %>% 
+          str_replace_all( "4.6." , "gold") %>% 
+          str_replace_all( "4.7." , "rub") )%>% 
   select(date, asset, value) %>% 
   filter( value != "-") %>% 
   mutate( value = value %>% str_extract("([:digit:]|\\.){1,}")) %>% 
@@ -162,12 +157,12 @@ for (i in 1:length(breaks_locs)){
 
 
 # Prep TOSCHNYI markings
-ggithub_icon <- "&#xf099"
-github_username <- "@tochnyi"
+twitter_icon <- "&#xf099"
+twitter_username <- "@tochnyi"
 
 social_caption <- glue::glue("**Data:** minfin.gov.ru<br>",
-                             "<span style='font-family:\"Font Awesome 6 Brands\";'>{github_icon};</span>
-  <span style='color: #000000'>{github_username}</span>"
+                             "<span style='font-family:\"Font Awesome 6 Brands\";'>{twitter_icon};</span>
+  <span style='color: #000000'>{twitter_username}</span>"
 )
 
 
@@ -402,14 +397,14 @@ plot <- lg_nwf_df %>%
   )
 
 
-long_logo <- readPNG(paste0(getwd(),'/Documents/TOCHNY/Research/NWF/Tochnyi_Logo_copy.png'))
+long_logo <- readPNG(paste0(getwd(),'/Tochnyi_Logo_copy.png'))
 
 plot2 = plot + 
   annotation_raster(long_logo, ymin = 130, ymax= 150, xmin = ymd(20200801),xmax = ymd(20210901))
 
 plot2
 
-output = paste0(getwd(),"/Documents/TOCHNY/Research/NWF/plot_liquid_nfw_2109to",maxdt_num,".pdf")
+output = paste0(getwd(),"plot_liquid_nfw_2109to",maxdt_num,".pdf")
 
 ggsave(filename = output,
        plot = plot2,
