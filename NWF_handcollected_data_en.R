@@ -42,7 +42,7 @@ order <- c("rub","gold","cny","eur","jpy", "gbp", "usd"  )
 
 
 ### GETTING LOCAL DATA
-file = paste0(getwd(),"/Documents/TOCHNY/Research/NWF/NWF_2.csv")
+file = paste0(getwd(),"/NWF_2.csv")
 
 df = read_csv2(file)
 
@@ -141,12 +141,12 @@ for (i in 1:length(breaks_locs)){
 
 
 # Prep TOSCHNYI markings
-ggithub_icon <- "&#xf099"
-github_username <- "@tochnyi"
+twitter_icon <- "&#xf099"
+twitter_username <- "@tochnyi"
 
 social_caption <- glue::glue("**Data:** minfin.gov.ru<br>",
-  "<span style='font-family:\"Font Awesome 6 Brands\";'>{github_icon};</span>
-  <span style='color: #000000'>{github_username}</span>"
+  "<span style='font-family:\"Font Awesome 6 Brands\";'>{twitter_icon};</span>
+  <span style='color: #000000'>{twitter_username}</span>"
 )
 
 
@@ -382,14 +382,14 @@ annotate("text", x = ymd(20230901), y = 138,
   )
 
 
-long_logo <- readPNG(paste0(getwd(),'/Documents/TOCHNY/Research/NWF/Tochnyi_Logo_copy.png'))
+long_logo <- readPNG(paste0(getwd(),'/Tochnyi_Logo_copy.png'))
 
 plot2 = plot + 
   annotation_raster(long_logo, ymin = 130, ymax= 150, xmin = ymd(20200801),xmax = ymd(20210901))
 
 plot2
 
-output = paste0(getwd(),"/Documents/TOCHNY/Research/NWF/plot_liquid_nfw_2109to",maxdt_num,".pdf")
+output = paste0(getwd(),"/plot_liquid_nfw_2109to",maxdt_num,".pdf")
 
 ggsave(filename = output, 
        plot = plot2, 
